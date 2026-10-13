@@ -180,8 +180,10 @@ UNION ALL  → Combine + keep duplicates
 
 - **View** → Saved query that behaves like a virtual table.
 - **Materialized View** → Stores the query result and needs refreshing.
-- **Function** → Returns a value/result and can be called from SQL.
-- **Procedure** → Called using `CALL` and is used for procedural operations.
+- **Function** → Performs logic and returns a value/result; can be used in SQL queries.
+- **Procedure** → Performs sequence of operations and returns output parameters or result sets; called using CALL.
+
+Functions can return one or multiple values/results, while procedures can return one or multiple values through OUT/INOUT parameters or result sets.
 
 > For interviews, prioritize **queries, joins, indexes, constraints, and transactions** over database-side programming.
 

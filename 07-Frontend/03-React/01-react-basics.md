@@ -260,3 +260,117 @@ The `Card` component does not need to know what content will be inside it.
 ### Remember
 
     children → Content passed between component tags
+
+---
+
+## 12. React Strict Mode
+
+**Strict Mode** is a development-only React feature that helps identify potential problems in an application.
+
+It is enabled by wrapping the application with `React.StrictMode`:
+
+    import { StrictMode } from "react";
+    import { createRoot } from "react-dom/client";
+
+    createRoot(document.getElementById("root")).render(
+      <StrictMode>
+        <App />
+      </StrictMode>
+    );
+
+### Why use Strict Mode?
+
+Strict Mode helps detect:
+
+- Unsafe or deprecated APIs
+- Unexpected side effects
+- Problems with component lifecycle
+- Effects that are not properly cleaned up
+- Code that may not work correctly with modern React features
+
+In development, React may intentionally render components or run certain effects more than once. This does not mean the application is necessarily broken; it is designed to expose side-effect bugs that may otherwise remain hidden.
+
+### Important behavior
+
+For example, an effect that updates external state or starts a timer should clean up after it runs:
+
+    useEffect(() => {
+      const timer = setInterval(() => {
+        console.log("Hello");
+      }, 1000);
+
+      return () => clearInterval(timer);
+    }, []);
+
+The cleanup function runs when the effect is removed or when React re-runs the effect during development checks.
+
+### Remember
+
+- Strict Mode is for development and debugging.
+- It can cause components and effects to run more than once in development.
+- Proper cleanup functions help prevent duplicate work and memory leaks.
+- Production builds do not use the same development-only checks.
+
+---
+
+## 13. Lazy Loading, Skeleton UI, and Suspense
+
+### Lazy Loading
+
+**Lazy loading** loads a component only when it is needed, instead of loading all application code at startup. It is useful for large pages, heavy components, and routes that are visited less frequently.
+
+React provides `lazy()` for this purpose:
+
+    import { lazy, Suspense } from "react";
+
+    const Dashboard = lazy(() => import("./Dashboard"));
+
+    function App() {
+      return (
+        <Suspense fallback={<Skeleton />}>
+          <Dashboard />
+        </Suspense>
+      );
+    }
+
+The imported component is loaded asynchronously. The `Suspense` component shows a fallback while the component is loading.
+
+### Suspense
+
+**Suspense** lets React display a fallback while a component is waiting for asynchronous data or code to load.
+
+```jsx
+<Suspense fallback={<Skeleton />}>
+  <ProfilePage />
+</Suspense>
+```
+
+The fallback is usually a loading indicator, skeleton UI, or placeholder. Suspense does not fetch data itself; it works with `lazy()` or data libraries that suspend during loading.
+
+### Skeleton UI
+
+A **skeleton UI** is a placeholder that resembles the final content while data is loading. It improves the user experience by preventing empty spaces and making the page feel responsive.
+
+    function Skeleton() {
+      return (
+        <div className="skeleton-card">
+          <div className="skeleton skeleton-line" />
+          <div className="skeleton skeleton-line short" />
+          <div className="skeleton skeleton-block" />
+        </div>
+      );
+    }
+
+### When to use them
+
+- Use **lazy loading** for large components, routes, and heavy features.
+- Use **Suspense** to display a fallback while asynchronous content loads.
+- Use a **skeleton UI** to show expected content structure during loading.
+- Keep the fallback small and visually similar to the final interface.
+
+### Remember
+
+- Lazy loading reduces the initial bundle size.
+- Suspense provides the loading fallback.
+- Skeleton UI communicates that content is loading.
+- A good loading state should not block the entire page when only one component is slow.
